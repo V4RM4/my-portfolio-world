@@ -1,7 +1,8 @@
 import { Cylinder, MeshReflectorMaterial, OrbitControls } from "@react-three/drei";
-import { CylinderCollider, RigidBody } from "@react-three/rapier";
+import { CuboidCollider, CylinderCollider, RigidBody } from "@react-three/rapier";
 import { Building } from "./Building";
 import { MenuSpots } from "./MenuSpots";
+import { CharacterController } from "./CharacterController";
 
 export const Experience = () => {
   return (
@@ -12,10 +13,15 @@ export const Experience = () => {
       <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow color={"#dedaf4"} />
 
       {/* Background */}
-      <mesh position={[0, -1.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[50, 50]} />
-        <MeshReflectorMaterial blur={[400, 400]} resolution={1024} mixBlur={1} mixStrength={15} depthScale={1} minDepthThreshold={0.85} color={"#dbecfb"} metalness={0.6} roughness={0} />
-      </mesh>
+      <RigidBody colliders={false} type="fixed" name="void">
+        <mesh position={[0, -1.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[50, 50]} />
+            <MeshReflectorMaterial blur={[400, 400]} resolution={1024} mixBlur={1} mixStrength={15} depthScale={1} minDepthThreshold={0.85} color={"#dbecfb"} metalness={0.6} roughness={0} />
+        </mesh>
+        
+        {/* Colliding body to bring the character back to stage */}
+        <CuboidCollider position={[0, -3.5, 0]} args={[50, 0.1, 50]} sensor />
+      </RigidBody>
 
       {/* (City Building with Roof Garden by Anonymous [CC-BY] via Poly Pizza) - Thank you! */}
       <group position-y={-2}>
@@ -32,6 +38,9 @@ export const Experience = () => {
             <meshStandardMaterial color={ "white"} />
         </Cylinder>
       </RigidBody>
+
+      {/* Character */}
+      <CharacterController />
 
       {/* Texts */}
       <MenuSpots />
