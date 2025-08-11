@@ -11,7 +11,7 @@ import { useGameStore } from "../store";
 const JUMP_FORCE = 0.02;
 const MOVEMENT_SPEED = 0.1;
 const MAX_VELOCITY = 3;
-const RUN_VEL = 1;
+const RUN_VEL = 2;
 
 export const CharacterController = () => {
     // Zustand store for character state
@@ -32,6 +32,8 @@ export const CharacterController = () => {
 
     // for every frame to handle movement
     useFrame((state) => {
+        // Check if rigidbody is available first
+        if (!rigidbody.current) return;
 
         // how fast the character is currently moving
         const linearVelocity = rigidbody.current.linvel();
@@ -83,24 +85,28 @@ export const CharacterController = () => {
         }
 
         // rotating the character based on movement direction
-        if (changeRotation){
+        if (changeRotation && character.current){
             const angle = Math.atan2(linearVelocity.x, linearVelocity.z);
             character.current.rotation.y = angle;
         }
 
         // for camera to follow character (remember to not follow when jumping)
-        const characterWorldPosition = character.current.getWorldPosition(new THREE.Vector3());
-        state.camera.position.x = characterWorldPosition.x;
-        state.camera.position.z = characterWorldPosition.z + 14;
+        if (character.current) {
+            const characterWorldPosition = character.current.getWorldPosition(new THREE.Vector3());
+            state.camera.position.x = characterWorldPosition.x;
+            state.camera.position.z = characterWorldPosition.z + 14;
 
-        const targetLookAt = new THREE.Vector3(characterWorldPosition.x, 0, characterWorldPosition.z);
-        state.camera.lookAt(targetLookAt);
+            const targetLookAt = new THREE.Vector3(characterWorldPosition.x, 0, characterWorldPosition.z);
+            state.camera.lookAt(targetLookAt);
+        }
     });
 
     const character = useRef();
     const resetPosition = () => {
         // resetting position on falling down
-        rigidbody.current.setTranslation(vec3({x: 0, y: 0, z:0}));
+        if (rigidbody.current) {
+            rigidbody.current.setTranslation(vec3({x: 0, y: 0, z:0}));
+        }
     }
     
     return(

@@ -3,12 +3,12 @@ import { Experience } from "./components/Experience";
 import { Suspense, useMemo } from "react";
 import { Physics } from "@react-three/rapier";
 import { Controls } from "./components/Controls";
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, Loader, useFont, useProgress } from "@react-three/drei";
 import { Leva } from "leva";
 import { TextDisplay } from "./components/TextDisplay";
 
 function App() {
-
+  useFont.preload('./fonts/Borel/Borel_Regular.json')
   const controls = useMemo(() => [
     { name: Controls.forward, keys: ["ArrowUp", "KeyW"] },
     { name: Controls.backward, keys: ["ArrowDown", "KeyS"] },
@@ -16,6 +16,8 @@ function App() {
     { name: Controls.right, keys: ["ArrowRight", "KeyD"] },
     { name: Controls.jump, keys: ["Space"] },
   ], [])
+
+  const {progress} = useProgress();
   return (
     <KeyboardControls map={controls}>
       <Leva hidden />
@@ -28,6 +30,8 @@ function App() {
           </Physics>
         </Suspense>
       </Canvas>
+      <Loader />
+      {progress === 100}
       <TextDisplay />
     </KeyboardControls>
   );
