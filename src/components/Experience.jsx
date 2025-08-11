@@ -2,6 +2,7 @@ import { Cylinder, MeshReflectorMaterial, OrbitControls } from "@react-three/dre
 import { CylinderCollider, RigidBody } from "@react-three/rapier";
 import { Building } from "./Building";
 import { MenuSpots } from "./MenuSpots";
+import { CharacterController } from "./CharacterController";
 
 export const Experience = () => {
   return (
@@ -32,6 +33,9 @@ export const Experience = () => {
             <meshStandardMaterial color={ "white"} />
         </Cylinder>
       </RigidBody>
+
+      {/* Character */}
+      <CharacterController />
 
       {/* Texts */}
       <MenuSpots />
