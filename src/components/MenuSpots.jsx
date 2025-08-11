@@ -31,11 +31,16 @@ export const MenuSpots = () => {
 
     // Making cylinder platforms with text for each menu item arranged in a circle
     return menu.flatMap((item, index) => (
-        <group key={item.name}rotation-y={(index / menu.length) * Math.PI * 2}>
+        <group key={item.name} rotation-y={(index / menu.length) * Math.PI * 2}>
             <group position-x={3.5} position-z={-3.5}>
-                <RigidBody colliders={false} type="fixed">
+                <RigidBody colliders={false} type="fixed" name={`menu-${item.name}`}>
                     <CylinderCollider args={[0.3 / 2, 1.5]} />
                     <MiniStage scale={[0.3, 0.3, 0.3]}/>
+                </RigidBody>
+                
+                {/* sensor for collision detection */}
+                <RigidBody colliders={false} type="fixed" sensor name={`menu-sensor-${item.name}`}>
+                    <CylinderCollider args={[1.5, 2]} position={[0, 0, 0]} />
                 </RigidBody>
                 <Sphere scale={1.5}>
                     <meshPhysicalMaterial {...config} />

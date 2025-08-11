@@ -17,6 +17,8 @@ export const CharacterController = () => {
     // Zustand store for character state
     const characterState = useGameStore((state) => state.characterState);
     const setCharacter = useGameStore((state) => state.setCharacter);
+    const setActiveMenuItem = useGameStore((state) => state.setActiveMenuItem);
+    const clearActiveMenuItem = useGameStore((state) => state.clearActiveMenuItem);
 
     // keyboard litstener for each direction and jumping
     const jumpPressed = useKeyboardControls((state) => state[Controls.jump]);
@@ -116,6 +118,17 @@ export const CharacterController = () => {
                 onIntersectionEnter={({other}) => {
                     if(other.rigidBodyObject.name === "void" ){
                         resetPosition();
+                    }
+                    // using sensor for menu item collision
+                    if(other.rigidBodyObject.name && other.rigidBodyObject.name.startsWith("menu-sensor-")) {
+                        const menuItemName = other.rigidBodyObject.name.replace("menu-sensor-", "");
+                        setActiveMenuItem(menuItemName);
+                    }
+                }}
+                onIntersectionExit={({other}) => {
+                    // remove menu text when leaving menu item area
+                    if(other.rigidBodyObject.name && other.rigidBodyObject.name.startsWith("menu-sensor-")) {
+                        clearActiveMenuItem();
                     }
                 }}
             >

@@ -5,6 +5,7 @@ import { Physics } from "@react-three/rapier";
 import { Controls } from "./components/Controls";
 import { KeyboardControls } from "@react-three/drei";
 import { Leva } from "leva";
+import { TextDisplay } from "./components/TextDisplay";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
           </Physics>
         </Suspense>
       </Canvas>
+      <TextDisplay />
     </KeyboardControls>
   );
 }
