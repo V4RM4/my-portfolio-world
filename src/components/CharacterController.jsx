@@ -6,12 +6,18 @@ import { PlayAudio } from "./PlayAudio";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useGameStore } from "../store";
 
 const JUMP_FORCE = 0.02;
 const MOVEMENT_SPEED = 0.1;
 const MAX_VELOCITY = 3;
+const RUN_VEL = 1;
 
 export const CharacterController = () => {
+    // Zustand store for character state
+    const characterState = useGameStore((state) => state.characterState);
+    const setCharacter = useGameStore((state) => state.setCharacter);
+
     // keyboard litstener for each direction and jumping
     const jumpPressed = useKeyboardControls((state) => state[Controls.jump]);
     const leftPressed = useKeyboardControls((state) => state[Controls.left]);
@@ -63,6 +69,16 @@ export const CharacterController = () => {
 
         // Apply the force to move the character
         rigidbody.current?.applyImpulse(impulse, true);
+
+        if (Math.abs(linearVelocity.x) > RUN_VEL || Math.abs(linearVelocity.z) > RUN_VEL){
+            if(characterState !== "Run"){
+                setCharacter("Run");
+            }
+        } else {
+            if (characterState !== "Idle"){
+                setCharacter("Idle");
+            }
+        }
 
         // rotating the character based on movement direction
         if (changeRotation){

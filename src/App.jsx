@@ -4,6 +4,7 @@ import { Suspense, useMemo } from "react";
 import { Physics } from "@react-three/rapier";
 import { Controls } from "./components/Controls";
 import { KeyboardControls } from "@react-three/drei";
+import { Leva } from "leva";
 
 function App() {
 
@@ -16,11 +17,12 @@ function App() {
   ], [])
   return (
     <KeyboardControls map={controls}>
+      <Leva hidden />
       <Canvas shadows camera={{ position: [0, 6, 14], fov: 49 }}>
         {/* change the args for background screen color */}
         <color attach="background" args={["#e3daf7"]} />
         <Suspense>
-          <Physics debug>
+          <Physics>
             <Experience />
           </Physics>
         </Suspense>
