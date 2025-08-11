@@ -2,10 +2,11 @@ import { CapsuleCollider, RigidBody } from "@react-three/rapier";
 import Character from "./Character";
 import { useKeyboardControls } from "@react-three/drei";
 import { Controls } from "./Controls";
+import { PlayAudio } from "./PlayAudio";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
-const JUMP_FORCE = 0.01;
+const JUMP_FORCE = 0.02;
 const MOVEMENT_SPEED = 0.1;
 const MAX_VELOCITY = 3;
 
@@ -74,7 +75,16 @@ export const CharacterController = () => {
     return(
         <group>
             {/* physics body that can move and collide with things */}
-            <RigidBody ref={rigidbody} colliders={false} scale={[0.5, 0.5, 0.5]} enabledRotations={[false, false, false]} friction={2}>
+            <RigidBody 
+                ref={rigidbody} 
+                colliders={false} 
+                scale={[0.5, 0.5, 0.5]} 
+                enabledRotations={[false, false, false]} 
+                friction={2}
+                onCollisionEnter={() => {
+                    PlayAudio("boing")
+                }}
+            >
                 {/* Invisible capsule shape for collision detection */}
                 <CapsuleCollider args={[0.8, 0.4]} position={[0, 1.2, 0]} />
                 <group ref={character}>
