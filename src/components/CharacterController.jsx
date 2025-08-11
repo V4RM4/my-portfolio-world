@@ -5,6 +5,7 @@ import { Controls } from "./Controls";
 import { PlayAudio } from "./PlayAudio";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 const JUMP_FORCE = 0.02;
 const MOVEMENT_SPEED = 0.1;
@@ -22,7 +23,7 @@ export const CharacterController = () => {
     const rigidbody = useRef();
 
     // for every frame to handle movement
-    useFrame(() => {
+    useFrame((state) => {
 
         // how fast the character is currently moving
         const linearVelocity = rigidbody.current.linvel();
@@ -68,6 +69,14 @@ export const CharacterController = () => {
             const angle = Math.atan2(linearVelocity.x, linearVelocity.z);
             character.current.rotation.y = angle;
         }
+
+        // for camera to follow character (remember to not follow when jumping)
+        const characterWorldPosition = character.current.getWorldPosition(new THREE.Vector3());
+        state.camera.position.x = characterWorldPosition.x;
+        state.camera.position.z = characterWorldPosition.z + 14;
+
+        const targetLookAt = new THREE.Vector3(characterWorldPosition.x, 0, characterWorldPosition.z);
+        state.camera.lookAt(targetLookAt);
     });
 
     const character = useRef();
