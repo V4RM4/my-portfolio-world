@@ -1,6 +1,7 @@
-import { Cylinder, MeshReflectorMaterial, OrbitControls, Text3D } from "@react-three/drei";
+import { Cylinder, MeshReflectorMaterial, OrbitControls } from "@react-three/drei";
 import { CylinderCollider, RigidBody } from "@react-three/rapier";
 import { Building } from "./Building";
+import { MenuSpots } from "./MenuSpots";
 
 export const Experience = () => {
   return (
@@ -33,10 +34,7 @@ export const Experience = () => {
       </RigidBody>
 
       {/* Texts */}
-      <Text3D font={"./fonts/Borel/Borel_Regular.json"} size={0.82}>
-        Vaisakh
-        <meshNormalMaterial />
-      </Text3D>
+      <MenuSpots />
       </group>
     </>
   );
