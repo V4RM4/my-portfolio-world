@@ -8,6 +8,7 @@ function App() {
     <Canvas shadows camera={{ position: [0, 6, 14], fov: 49 }}>
       {/* change the args for background screen color */}
       <color attach="background" args={["#d9edf8"]} />
+      <fog attach={"fog"} args={["#d9edf8", 30, 40]} />
       <Suspense>
         <Physics debug>
           <Experience />
