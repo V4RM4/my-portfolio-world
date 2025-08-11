@@ -1,4 +1,4 @@
-import { Cylinder, MeshReflectorMaterial, OrbitControls } from "@react-three/drei";
+import { Cylinder, MeshReflectorMaterial, OrbitControls, Text3D } from "@react-three/drei";
 import { CylinderCollider, RigidBody } from "@react-three/rapier";
 import { Building } from "./Building";
 
@@ -31,6 +31,12 @@ export const Experience = () => {
             <meshStandardMaterial color={ "white"} />
         </Cylinder>
       </RigidBody>
+
+      {/* Texts */}
+      <Text3D font={"./fonts/Borel/Borel_Regular.json"} size={0.82}>
+        Vaisakh
+        <meshNormalMaterial />
+      </Text3D>
       </group>
     </>
   );
