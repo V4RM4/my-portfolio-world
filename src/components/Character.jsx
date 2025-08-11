@@ -11,7 +11,7 @@ export default function Character(props) {
                 <primitive object={nodes.LeftFootCtrl} />
                 <primitive object={nodes.RightFootCtrl} />
                 <primitive object={nodes.HipsCtrl} />
-                <skinnedMesh geometry={nodes.characterMedium.geometry} material={materials['skin.001']} skeleton={nodes.characterMedium.skeleton} />
+                <skinnedMesh geometry={nodes.characterMedium.geometry} material={materials['skin.001']} skeleton={nodes.characterMedium.skeleton} castShadow/>
             </group>
         </group>
     )

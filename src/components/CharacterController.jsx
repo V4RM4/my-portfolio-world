@@ -1,4 +1,4 @@
-import { CapsuleCollider, RigidBody } from "@react-three/rapier";
+import { CapsuleCollider, RigidBody, vec3 } from "@react-three/rapier";
 import Character from "./Character";
 import { useKeyboardControls } from "@react-three/drei";
 import { Controls } from "./Controls";
@@ -71,6 +71,10 @@ export const CharacterController = () => {
     });
 
     const character = useRef();
+    const resetPosition = () => {
+        // resetting position on falling down
+        rigidbody.current.setTranslation(vec3({x: 0, y: 0, z:0}));
+    }
     
     return(
         <group>
@@ -83,6 +87,11 @@ export const CharacterController = () => {
                 friction={2}
                 onCollisionEnter={() => {
                     PlayAudio("boing")
+                }}
+                onIntersectionEnter={({other}) => {
+                    if(other.rigidBodyObject.name === "void" ){
+                        resetPosition();
+                    }
                 }}
             >
                 {/* Invisible capsule shape for collision detection */}
