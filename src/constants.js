@@ -18,6 +18,6 @@ export const menu = [
     name: "Achievements",
   },
   {
-    name: "Hire Me",
+    name: "Contact",
   },
 ];

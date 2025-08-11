@@ -6,12 +6,20 @@ import { PlayAudio } from "./PlayAudio";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useGameStore } from "../store";
 
 const JUMP_FORCE = 0.02;
 const MOVEMENT_SPEED = 0.1;
 const MAX_VELOCITY = 3;
+const RUN_VEL = 2;
 
 export const CharacterController = () => {
+    // Zustand store for character state
+    const characterState = useGameStore((state) => state.characterState);
+    const setCharacter = useGameStore((state) => state.setCharacter);
+    const setActiveMenuItem = useGameStore((state) => state.setActiveMenuItem);
+    const clearActiveMenuItem = useGameStore((state) => state.clearActiveMenuItem);
+
     // keyboard litstener for each direction and jumping
     const jumpPressed = useKeyboardControls((state) => state[Controls.jump]);
     const leftPressed = useKeyboardControls((state) => state[Controls.left]);
@@ -24,6 +32,8 @@ export const CharacterController = () => {
 
     // for every frame to handle movement
     useFrame((state) => {
+        // Check if rigidbody is available first
+        if (!rigidbody.current) return;
 
         // how fast the character is currently moving
         const linearVelocity = rigidbody.current.linvel();
@@ -64,25 +74,39 @@ export const CharacterController = () => {
         // Apply the force to move the character
         rigidbody.current?.applyImpulse(impulse, true);
 
+        if (Math.abs(linearVelocity.x) > RUN_VEL || Math.abs(linearVelocity.z) > RUN_VEL){
+            if(characterState !== "Run"){
+                setCharacter("Run");
+            }
+        } else {
+            if (characterState !== "Idle"){
+                setCharacter("Idle");
+            }
+        }
+
         // rotating the character based on movement direction
-        if (changeRotation){
+        if (changeRotation && character.current){
             const angle = Math.atan2(linearVelocity.x, linearVelocity.z);
             character.current.rotation.y = angle;
         }
 
         // for camera to follow character (remember to not follow when jumping)
-        const characterWorldPosition = character.current.getWorldPosition(new THREE.Vector3());
-        state.camera.position.x = characterWorldPosition.x;
-        state.camera.position.z = characterWorldPosition.z + 14;
+        if (character.current) {
+            const characterWorldPosition = character.current.getWorldPosition(new THREE.Vector3());
+            state.camera.position.x = characterWorldPosition.x;
+            state.camera.position.z = characterWorldPosition.z + 14;
 
-        const targetLookAt = new THREE.Vector3(characterWorldPosition.x, 0, characterWorldPosition.z);
-        state.camera.lookAt(targetLookAt);
+            const targetLookAt = new THREE.Vector3(characterWorldPosition.x, 0, characterWorldPosition.z);
+            state.camera.lookAt(targetLookAt);
+        }
     });
 
     const character = useRef();
     const resetPosition = () => {
         // resetting position on falling down
-        rigidbody.current.setTranslation(vec3({x: 0, y: 0, z:0}));
+        if (rigidbody.current) {
+            rigidbody.current.setTranslation(vec3({x: 0, y: 0, z:0}));
+        }
     }
     
     return(
@@ -100,6 +124,17 @@ export const CharacterController = () => {
                 onIntersectionEnter={({other}) => {
                     if(other.rigidBodyObject.name === "void" ){
                         resetPosition();
+                    }
+                    // using sensor for menu item collision
+                    if(other.rigidBodyObject.name && other.rigidBodyObject.name.startsWith("menu-sensor-")) {
+                        const menuItemName = other.rigidBodyObject.name.replace("menu-sensor-", "");
+                        setActiveMenuItem(menuItemName);
+                    }
+                }}
+                onIntersectionExit={({other}) => {
+                    // remove menu text when leaving menu item area
+                    if(other.rigidBodyObject.name && other.rigidBodyObject.name.startsWith("menu-sensor-")) {
+                        clearActiveMenuItem();
                     }
                 }}
             >
